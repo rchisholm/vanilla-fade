@@ -11,7 +11,7 @@
  * options.fadeTime: time for the fadeIn/fadeOut effects, defaults to 250;
  * options.toggleVisibility: true if using visibility:hidden instead of display:none for fadeOut;
  */
-function slideFadeReplace(fadeOutTarget, fadeInTarget, callback = () => {}, options = []) {
+function vFadeReplace(fadeOutTarget, fadeInTarget, callback = () => {}, options = []) {
 
     // static values
     const defaultWaitTime = 2000;
@@ -27,11 +27,11 @@ function slideFadeReplace(fadeOutTarget, fadeInTarget, callback = () => {}, opti
         options.waitTime = options.waitTime === true ? defaultWaitTime : options.waitTime;
         setTimeout(() => {
             options.waitTime = false;
-            slideFadeReplace(fadeOutTarget, fadeInTarget, callback, options);
+            vFadeReplace(fadeOutTarget, fadeInTarget, callback, options);
         }, options.waitTime);
     } else {
-        slideFadeOut(fadeOutTarget, () => {
-            slideFadeIn(fadeInTarget, callback, options);
+        vFadeOut(fadeOutTarget, () => {
+            vFadeIn(fadeInTarget, callback, options);
         }, options);
     }
 }
@@ -47,7 +47,7 @@ function slideFadeReplace(fadeOutTarget, fadeInTarget, callback = () => {}, opti
  * options.direction: direction for the fading out element to fly away if position:aboslute (left, right, up, down) - null to stay still;
  * options.zoom: direction for the fading element to zoom if position:absolute (in, out) - null to stay same size
  */
-function slideFadeOut(fadeOutTarget, callback = () => {}, options = []) {
+function vFadeOut(fadeOutTarget, callback = () => {}, options = []) {
 
     // check cb
     if (typeof callback !== 'function') {
@@ -140,7 +140,7 @@ function slideFadeOut(fadeOutTarget, callback = () => {}, options = []) {
                 options.waitTime = typeof options.waitTime === 'number' ? options.waitTime : defaultWaitTime;
                 setTimeout(() => {
                     options.waitTime = false;
-                    slideFadeOut(fadeOutTarget, callback, options);
+                    vFadeOut(fadeOutTarget, callback, options);
                 }, options.waitTime);
             } else {
                 options.fadeTime = typeof options.fadeTime === 'number' ? options.fadeTime : defaultFadeTime;
@@ -195,7 +195,7 @@ function slideFadeOut(fadeOutTarget, callback = () => {}, options = []) {
  * options.fadeTime: time for the fadeIn/fadeOut effects, defaults to 250;
  * options.toggleVisibility: true if using visibility:hidden instead of display:none for fadeOut;
  */
-function slideFadeIn(fadeInTarget, callback = () => {}, options = []) {
+function vFadeIn(fadeInTarget, callback = () => {}, options = []) {
 
     // check cb
     if (typeof callback !== 'function') {
@@ -240,7 +240,7 @@ function slideFadeIn(fadeInTarget, callback = () => {}, options = []) {
                 options.waitTime = typeof options.waitTime === 'number' ? options.waitTime : defaultWaitTime;
                 setTimeout(() => {
                     options.waitTime = false;
-                    slideFadeIn(fadeInTarget, callback, options);
+                    vFadeIn(fadeInTarget, callback, options);
                 }, options.waitTime);
             } else {
                 if (fadeInTarget) {

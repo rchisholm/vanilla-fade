@@ -13,7 +13,7 @@
  * options.fadeTime: time for the fadeIn/fadeOut effects, defaults to 250;
  * options.toggleVisibility: true if using visibility:hidden instead of display:none for fadeOut;
  */
-function slideFadeReplace(fadeOutTarget, fadeInTarget) {
+function vFadeReplace(fadeOutTarget, fadeInTarget) {
   var callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function () {};
   var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
   // static values
@@ -29,11 +29,11 @@ function slideFadeReplace(fadeOutTarget, fadeInTarget) {
     options.waitTime = options.waitTime === true ? defaultWaitTime : options.waitTime;
     setTimeout(function () {
       options.waitTime = false;
-      slideFadeReplace(fadeOutTarget, fadeInTarget, callback, options);
+      vFadeReplace(fadeOutTarget, fadeInTarget, callback, options);
     }, options.waitTime);
   } else {
-    slideFadeOut(fadeOutTarget, function () {
-      slideFadeIn(fadeInTarget, callback, options);
+    vFadeOut(fadeOutTarget, function () {
+      vFadeIn(fadeInTarget, callback, options);
     }, options);
   }
 }
@@ -50,7 +50,7 @@ function slideFadeReplace(fadeOutTarget, fadeInTarget) {
  */
 
 
-function slideFadeOut(fadeOutTarget) {
+function vFadeOut(fadeOutTarget) {
   var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
   var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
@@ -157,7 +157,7 @@ function slideFadeOut(fadeOutTarget) {
         options.waitTime = typeof options.waitTime === 'number' ? options.waitTime : defaultWaitTime;
         setTimeout(function () {
           options.waitTime = false;
-          slideFadeOut(fadeOutTarget, callback, options);
+          vFadeOut(fadeOutTarget, callback, options);
         }, options.waitTime);
       } else {
         options.fadeTime = typeof options.fadeTime === 'number' ? options.fadeTime : defaultFadeTime;
@@ -215,7 +215,7 @@ function slideFadeOut(fadeOutTarget) {
  */
 
 
-function slideFadeIn(fadeInTarget) {
+function vFadeIn(fadeInTarget) {
   var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
   var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
@@ -260,7 +260,7 @@ function slideFadeIn(fadeInTarget) {
         options.waitTime = typeof options.waitTime === 'number' ? options.waitTime : defaultWaitTime;
         setTimeout(function () {
           options.waitTime = false;
-          slideFadeIn(fadeInTarget, callback, options);
+          vFadeIn(fadeInTarget, callback, options);
         }, options.waitTime);
       } else {
         if (fadeInTarget) {
