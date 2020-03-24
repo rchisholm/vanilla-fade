@@ -22,7 +22,6 @@ Then, simply call the functions on the elements you want to fade in and out.
     var notify = function() { console.log('fade complete.'); };
     vFadeReplace('element-3', 'element-4', notify);
     vFadeOut('element-4', notify);
-
 </script>
 ```
 
