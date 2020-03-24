@@ -9,31 +9,29 @@ class VanillaFader {
         this.intervalTime = 20;
 
         /**
-         * @param {{waitTime: number, fadeTime: number, mode: string, display: any}} options options object for fade:
+         * @param {{waitTime: number, fadeTime: number, mode: string, display: string}} options options object for fade:
          * options.waitTime: time in ms to wait before executing;
          * options.fadeTime: time in ms for the fadeIn/fadeOut effects;
          * options.mode: type of fade-out; 'display' or 'visibility';
          * options.display: display the target should have; 'block', 'flex', etc;
          */
-        this.setOptions = (options = null) => {
-            if(options) {
-                if(options.waitTime) {
-                    this.waitTime = typeof options.waitTime === 'number' ? options.waitTime : null;
-                }
-                if(options.fadeTime) {
-                    this.fadeTime = typeof options.fadeTime === 'number' ? options.fadeTime : this.defaultFadeTime;
-                }
-                if(options.mode) {
-                    this.mode = this.modes.includes(options.mode) ? options.mode : 'display';
-                }
-                if(options.display) {
-                    this.display = typeof options.display === 'string' ? options.display : 'block';
-                }
-            } else {
-                this.waitTime = null;
-                this.fadeTime = this.defaultFadeTime;
-                this.mode = 'display';
-                this.display = 'block';
+        this.setOptions = (options = {}) => {
+            // defaults
+            this.waitTime = null;
+            this.fadeTime = this.defaultFadeTime;
+            this.mode = 'display';
+            this.display = 'block';
+            if(options.waitTime) {
+                this.waitTime = typeof options.waitTime === 'number' ? options.waitTime : null;
+            }
+            if(options.fadeTime) {
+                this.fadeTime = typeof options.fadeTime === 'number' ? options.fadeTime : this.defaultFadeTime;
+            }
+            if(options.mode) {
+                this.mode = this.modes.includes(options.mode) ? options.mode : 'display';
+            }
+            if(options.display) {
+                this.display = typeof options.display === 'string' ? options.display : 'block';
             }
         };
 
@@ -48,9 +46,6 @@ class VanillaFader {
             if (options) {
                 this.setOptions(options);
             }
-            
-            console.log('fadeOut options:');
-            console.log(this);
 
             // check callback
             if (typeof callback !== 'function') {
@@ -114,9 +109,6 @@ class VanillaFader {
             if (options) {
                 this.setOptions(options);
             }
-
-            console.log('fadeIn options:');
-            console.log(this);
 
             // check callback
             if (typeof callback !== 'function') {

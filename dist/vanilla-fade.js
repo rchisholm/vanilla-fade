@@ -15,7 +15,7 @@ var VanillaFader = function VanillaFader() {
   this.modes = ['display', 'visibility'];
   this.intervalTime = 20;
   /**
-   * @param {{waitTime: number, fadeTime: number, mode: string, display: any}} options options object for fade:
+   * @param {{waitTime: number, fadeTime: number, mode: string, display: string}} options options object for fade:
    * options.waitTime: time in ms to wait before executing;
    * options.fadeTime: time in ms for the fadeIn/fadeOut effects;
    * options.mode: type of fade-out; 'display' or 'visibility';
@@ -23,29 +23,27 @@ var VanillaFader = function VanillaFader() {
    */
 
   this.setOptions = function () {
-    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+    // defaults
+    _this.waitTime = null;
+    _this.fadeTime = _this.defaultFadeTime;
+    _this.mode = 'display';
+    _this.display = 'block';
 
-    if (options) {
-      if (options.waitTime) {
-        _this.waitTime = typeof options.waitTime === 'number' ? options.waitTime : null;
-      }
+    if (options.waitTime) {
+      _this.waitTime = typeof options.waitTime === 'number' ? options.waitTime : null;
+    }
 
-      if (options.fadeTime) {
-        _this.fadeTime = typeof options.fadeTime === 'number' ? options.fadeTime : _this.defaultFadeTime;
-      }
+    if (options.fadeTime) {
+      _this.fadeTime = typeof options.fadeTime === 'number' ? options.fadeTime : _this.defaultFadeTime;
+    }
 
-      if (options.mode) {
-        _this.mode = _this.modes.includes(options.mode) ? options.mode : 'display';
-      }
+    if (options.mode) {
+      _this.mode = _this.modes.includes(options.mode) ? options.mode : 'display';
+    }
 
-      if (options.display) {
-        _this.display = typeof options.display === 'string' ? options.display : 'block';
-      }
-    } else {
-      _this.waitTime = null;
-      _this.fadeTime = _this.defaultFadeTime;
-      _this.mode = 'display';
-      _this.display = 'block';
+    if (options.display) {
+      _this.display = typeof options.display === 'string' ? options.display : 'block';
     }
   };
   /**
@@ -62,10 +60,8 @@ var VanillaFader = function VanillaFader() {
     // set options
     if (options) {
       _this.setOptions(options);
-    }
+    } // check callback
 
-    console.log('fadeOut options:');
-    console.log(_this); // check callback
 
     if (typeof callback !== 'function') {
       callback = function callback() {};
@@ -130,10 +126,8 @@ var VanillaFader = function VanillaFader() {
     // set options
     if (options) {
       _this.setOptions(options);
-    }
+    } // check callback
 
-    console.log('fadeIn options:');
-    console.log(_this); // check callback
 
     if (typeof callback !== 'function') {
       callback = function callback() {};
