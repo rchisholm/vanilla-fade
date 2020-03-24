@@ -40,12 +40,7 @@ class VanillaFader {
          * @param {function} callback function executed when fade is finished
          * @param {object} options options for fade configuration
          */
-        this.fadeOut = (fadeOutTarget, callback = () => {}, options = null) => {
-
-            // set options
-            if (options) {
-                this.setOptions(options);
-            }
+        this.fadeOut = (fadeOutTarget, callback = () => {}, skipWait = false) => {
 
             // check callback
             if (typeof callback !== 'function') {
@@ -70,6 +65,7 @@ class VanillaFader {
 
             if (fadeOutTarget) {
                 if (isVisible(fadeOutTarget)) {
+                    var waitTime = skipWait ? 0 : this.waitTime;
                     setTimeout(() => {
                         var opacityInterval = this.intervalTime / this.fadeTime;
                         fadeOutTarget.style.opacity = 1;
@@ -83,7 +79,7 @@ class VanillaFader {
                                 callback();
                             }
                         }, this.intervalTime);
-                    }, this.waitTime);
+                    }, waitTime);
                 } else {
                     callback();
                     // setTimeout(callback, options.fadeTime);
@@ -98,12 +94,7 @@ class VanillaFader {
          * @param {function} callback function executed when fade is finished
          * @param {object} options options for fade configuration
          */
-        this.fadeIn = (fadeInTarget, callback = () => {}, options = null) => {
-
-            // set options
-            if (options) {
-                this.setOptions(options);
-            }
+        this.fadeIn = (fadeInTarget, callback = () => {}, skipWait = false) => {
 
             // check callback
             if (typeof callback !== 'function') {
@@ -129,6 +120,7 @@ class VanillaFader {
 
             if (fadeInTarget) {
                 if (!isVisible(fadeInTarget)) {
+                    var waitTime = skipWait ? 0 : this.waitTime;
                     setTimeout(() => {
                         if (fadeInTarget) {
                             var opacityInterval = this.intervalTime / this.fadeTime;
@@ -143,7 +135,7 @@ class VanillaFader {
                                 }
                             }, this.intervalTime);
                         }
-                    }, this.waitTime);
+                    }, waitTime);
                 } else {
                     callback();
                     // setTimeout(callback, options.fadeTime);
@@ -159,16 +151,12 @@ class VanillaFader {
          * @param {function} callback function executed when fade is finished
          * @param {object} options options for fade configuration
          */
-        this.fadeReplace = (fadeOutTarget, fadeInTarget, callback = () => {}, options = null) => {
-            // set options
-            if (options) {
-                this.setOptions(options);
-            }
+        this.fadeReplace = (fadeOutTarget, fadeInTarget, callback = () => {}) => {
 
             setTimeout(() => {
                 this.fadeOut(fadeOutTarget, () => {
-                    this.fadeIn(fadeInTarget, callback);
-                });
+                    this.fadeIn(fadeInTarget, callback, true);
+                }, true);
             }, this.waitTime);
         };
 
@@ -184,26 +172,14 @@ function createFader(options = {}) {
 function vFadeOut(fadeOutTarget, callback = () => {}, options = {}) {
     var vFader = new VanillaFader(options);
     vFader.fadeOut(fadeOutTarget, callback);
-
-    // // alt version:
-    // var vFader = new VanillaFader();
-    // vFader.fadeOut(fadeOutTarget, callback, options);
 }
 
 function vFadeIn(fadeInTarget, callback = () => {}, options = {}) {
     var vFader = new VanillaFader(options);
     vFader.fadeIn(fadeInTarget, callback);
-
-    // // alt version:
-    // var vFader = new VanillaFader();
-    // vFader.fadeIn(fadeInTarget, callback, options);
 }
 
 function vFadeReplace(fadeOutTarget, fadeInTarget, callback = () => {}, options = {}) {
     var vFader = new VanillaFader(options);
     vFader.fadeReplace(fadeOutTarget, fadeInTarget, callback);
-
-    // // alt version:
-    // var vFader = new VanillaFader();
-    // vFader.fadeReplace(fadeOutTarget, fadeInTarget, callback, options);
 }

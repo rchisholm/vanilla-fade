@@ -25,13 +25,13 @@ var VanillaFader = function VanillaFader() {
   this.setOptions = function () {
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     // defaults
-    _this.waitTime = null;
+    _this.waitTime = 0;
     _this.fadeTime = _this.defaultFadeTime;
     _this.mode = 'display';
     _this.display = 'block';
 
     if (options.waitTime) {
-      _this.waitTime = typeof options.waitTime === 'number' ? options.waitTime : null;
+      _this.waitTime = typeof options.waitTime === 'number' ? options.waitTime : 0;
     }
 
     if (options.fadeTime) {
@@ -55,14 +55,9 @@ var VanillaFader = function VanillaFader() {
 
   this.fadeOut = function (fadeOutTarget) {
     var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
-    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var skipWait = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-    // set options
-    if (options) {
-      _this.setOptions(options);
-    } // check callback
-
-
+    // check callback
     if (typeof callback !== 'function') {
       callback = function callback() {};
     } // check target
@@ -85,13 +80,8 @@ var VanillaFader = function VanillaFader() {
 
     if (fadeOutTarget) {
       if (isVisible(fadeOutTarget)) {
-        if (_this.waitTime) {
-          setTimeout(function () {
-            _this.waitTime = null;
-
-            _this.fadeOut(fadeOutTarget, callback);
-          }, _this.waitTime);
-        } else {
+        var waitTime = skipWait ? 0 : _this.waitTime;
+        setTimeout(function () {
           var opacityInterval = _this.intervalTime / _this.fadeTime;
           fadeOutTarget.style.opacity = 1;
           var fadeOutEffect = setInterval(function () {
@@ -104,7 +94,7 @@ var VanillaFader = function VanillaFader() {
               callback();
             }
           }, _this.intervalTime);
-        }
+        }, waitTime);
       } else {
         callback(); // setTimeout(callback, options.fadeTime);
       }
@@ -121,14 +111,9 @@ var VanillaFader = function VanillaFader() {
 
   this.fadeIn = function (fadeInTarget) {
     var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
-    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var skipWait = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-    // set options
-    if (options) {
-      _this.setOptions(options);
-    } // check callback
-
-
+    // check callback
     if (typeof callback !== 'function') {
       callback = function callback() {};
     } // check target
@@ -152,13 +137,8 @@ var VanillaFader = function VanillaFader() {
 
     if (fadeInTarget) {
       if (!isVisible(fadeInTarget)) {
-        if (_this.waitTime) {
-          setTimeout(function () {
-            _this.waitTime = false;
-
-            _this.fadeIn(fadeInTarget, callback);
-          }, _this.waitTime);
-        } else {
+        var waitTime = skipWait ? 0 : _this.waitTime;
+        setTimeout(function () {
           if (fadeInTarget) {
             var opacityInterval = _this.intervalTime / _this.fadeTime;
             fadeInTarget.style.opacity = 0;
@@ -172,7 +152,7 @@ var VanillaFader = function VanillaFader() {
               }
             }, _this.intervalTime);
           }
-        }
+        }, waitTime);
       } else {
         callback(); // setTimeout(callback, options.fadeTime);
       }
@@ -190,24 +170,11 @@ var VanillaFader = function VanillaFader() {
 
   this.fadeReplace = function (fadeOutTarget, fadeInTarget) {
     var callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function () {};
-    var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-
-    // set options
-    if (options) {
-      _this.setOptions(options);
-    }
-
-    if (_this.waitTime) {
-      setTimeout(function () {
-        _this.waitTime = null;
-
-        _this.fadeReplace(fadeOutTarget, fadeInTarget, callback);
-      }, _this.waitTime);
-    } else {
+    setTimeout(function () {
       _this.fadeOut(fadeOutTarget, function () {
-        _this.fadeIn(fadeInTarget, callback);
-      });
-    }
+        _this.fadeIn(fadeInTarget, callback, true);
+      }, true);
+    }, _this.waitTime);
   }; // set options
 
 
@@ -223,25 +190,19 @@ function vFadeOut(fadeOutTarget) {
   var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
   var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
   var vFader = new VanillaFader(options);
-  vFader.fadeOut(fadeOutTarget, callback); // // alt version:
-  // var vFader = new VanillaFader();
-  // vFader.fadeOut(fadeOutTarget, callback, options);
+  vFader.fadeOut(fadeOutTarget, callback);
 }
 
 function vFadeIn(fadeInTarget) {
   var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
   var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
   var vFader = new VanillaFader(options);
-  vFader.fadeIn(fadeInTarget, callback); // // alt version:
-  // var vFader = new VanillaFader();
-  // vFader.fadeIn(fadeInTarget, callback, options);
+  vFader.fadeIn(fadeInTarget, callback);
 }
 
 function vFadeReplace(fadeOutTarget, fadeInTarget) {
   var callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function () {};
   var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
   var vFader = new VanillaFader(options);
-  vFader.fadeReplace(fadeOutTarget, fadeInTarget, callback); // // alt version:
-  // var vFader = new VanillaFader();
-  // vFader.fadeReplace(fadeOutTarget, fadeInTarget, callback, options);
+  vFader.fadeReplace(fadeOutTarget, fadeInTarget, callback);
 }
