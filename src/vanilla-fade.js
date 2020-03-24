@@ -2,7 +2,7 @@
 
 class VanillaFader {
 
-    constructor(options = {}) {
+    constructor(options = null) {
         // constants
         this.defaultFadeTime = 250;
         this.modes = ['display', 'visibility'];
@@ -15,12 +15,26 @@ class VanillaFader {
          * options.mode: type of fade-out; 'display' or 'visibility';
          * options.display: display the target should have; 'block', 'flex', etc;
          */
-        this.setOptions = (options = {}) => {
-            this.waitTime = typeof options.waitTime === 'number' ? options.waitTime : null;
-            this.fadeTime = typeof options.fadeTime === 'number' ? options.fadeTime : this.defaultFadeTime;
-            this.mode = this.modes.includes(options.mode) ? options.mode : 'display';
-            this.display = typeof options.display === 'string' ? options.display : 'block';
-            return this;
+        this.setOptions = (options = null) => {
+            if(options) {
+                if(options.waitTime) {
+                    this.waitTime = typeof options.waitTime === 'number' ? options.waitTime : null;
+                }
+                if(options.fadeTime) {
+                    this.fadeTime = typeof options.fadeTime === 'number' ? options.fadeTime : this.defaultFadeTime;
+                }
+                if(options.mode) {
+                    this.mode = this.modes.includes(options.mode) ? options.mode : 'display';
+                }
+                if(options.display) {
+                    this.display = typeof options.display === 'string' ? options.display : 'block';
+                }
+            } else {
+                this.waitTime = null;
+                this.fadeTime = this.defaultFadeTime;
+                this.mode = 'display';
+                this.display = 'block';
+            }
         };
 
         /**
@@ -34,6 +48,9 @@ class VanillaFader {
             if (options) {
                 this.setOptions(options);
             }
+            
+            console.log('fadeOut options:');
+            console.log(this);
 
             // check callback
             if (typeof callback !== 'function') {
@@ -60,8 +77,8 @@ class VanillaFader {
                 if (isVisible(fadeOutTarget)) {
                     if (this.waitTime) {
                         setTimeout(() => {
-                            this.waitTime = false;
-                            vFadeOut(fadeOutTarget, callback);
+                            this.waitTime = null;
+                            this.fadeOut(fadeOutTarget, callback);
                         }, this.waitTime);
                     } else {
                         var opacityInterval = this.intervalTime / this.fadeTime;
@@ -98,6 +115,9 @@ class VanillaFader {
                 this.setOptions(options);
             }
 
+            console.log('fadeIn options:');
+            console.log(this);
+
             // check callback
             if (typeof callback !== 'function') {
                 callback = () => {};
@@ -125,7 +145,7 @@ class VanillaFader {
                     if (this.waitTime) {
                         setTimeout(() => {
                             this.waitTime = false;
-                            vFadeIn(fadeInTarget, callback);
+                            this.fadeIn(fadeInTarget, callback);
                         }, this.waitTime);
                     } else {
                         if (fadeInTarget) {
@@ -165,12 +185,12 @@ class VanillaFader {
 
             if (this.waitTime) {
                 setTimeout(() => {
-                    this.waitTime = false;
-                    vFadeReplace(fadeOutTarget, fadeInTarget, callback);
+                    this.waitTime = null;
+                    this.fadeReplace(fadeOutTarget, fadeInTarget, callback);
                 }, this.waitTime);
             } else {
-                vFadeOut(fadeOutTarget, () => {
-                    vFadeIn(fadeInTarget, callback);
+                this.fadeOut(fadeOutTarget, () => {
+                    this.fadeIn(fadeInTarget, callback);
                 });
             }
         };
@@ -179,7 +199,6 @@ class VanillaFader {
         this.setOptions(options);
     }
 }
-
 
 function vFadeOut(fadeOutTarget, callback = () => {}, options = {}) {
     var vFader = new VanillaFader(options);
