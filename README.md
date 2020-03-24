@@ -128,7 +128,7 @@ vFadeIn(
 | display | string | if mode = 'display', display the fading out target should have; 'block', 'flex', etc. | 'block' |
 
 
-#### Sample of all parameters options
+#### Sample of all parameters and options
 ```javascript
 var options = {
     waitTime: 1000,
