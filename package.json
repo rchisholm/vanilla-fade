@@ -1,11 +1,11 @@
 {
-  "name": "vanilla-fade",
+  "name": "vanilla-fader",
   "version": "1.0.0",
-  "description": "vanilla javascript fade-in, fade-out functions",
+  "description": "vanilla javascript fade-in, fade-out library",
   "main": "index.js",
   "scripts": {
     "compile:js": "babel ./src -d ./dist",
-    "minify:js": "node-minify --compressor uglify-js --input ./dist/vanilla-fade.js --output ./dist/vanilla-fade.min.js",
+    "minify:js": "node-minify --compressor uglify-js --input ./dist/vanilla-fader.js --output ./dist/vanilla-fader.min.js",
     "build": "npm run compile:js && npm run minify:js"
   },
   "repository": {
