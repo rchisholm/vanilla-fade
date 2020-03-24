@@ -26,7 +26,7 @@ function vFadeOut(fadeOutTarget, callback = () => {}, options = []) {
 
     // static values
     const defaultWaitTime = 2000;
-    const defaultFadeTime = 500;
+    const defaultFadeTime = 250;
     const intervalTime = 20;
     const xDirections = ['left', 'right', 'random'];
     const yDirections = ['up', 'down', 'random'];
@@ -245,11 +245,7 @@ function vFadeIn(fadeInTarget, callback = () => {}, options = []) {
  */
 function vFadeReplace(fadeOutTarget, fadeInTarget, callback = () => {}, options = []) {
 
-    // static values
-    const defaultWaitTime = 2000;
-
     if (options.waitTime) {
-        options.waitTime = options.waitTime === true ? defaultWaitTime : options.waitTime;
         setTimeout(() => {
             options.waitTime = false;
             vFadeReplace(fadeOutTarget, fadeInTarget, callback, options);

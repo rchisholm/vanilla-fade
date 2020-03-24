@@ -6,10 +6,10 @@
  * fades the target out
  * @param {element||string} fadeOutTarget element to fade out, or its id
  * @param {function} callback function executed when fade is finished
- * @param {{waitTime: any, fadeTime: number, toggleVisibility: boolean, directionX: string, directionY: string, zoom: string}} options options object for fade:
- * options.waitTime: wait before executing - true for 2 sec, false for 0 sec, num for other (ms);
+ * @param {{waitTime: number, fadeTime: number, mode: string, directionX: string, directionY: string, zoom: string}} options options object for fade:
+ * options.waitTime: wait before executing;
  * options.fadeTime: time for the fadeIn/fadeOut effects, defaults to 250;
- * options.toggleVisibility: true if using visibility:hidden instead of display:none for fadeOut;
+ * options.mode: type of fade-out; 'display' or 'visibility';
  * options.directionX: x direction for the fading out element to fly away if position:aboslute (left, right, random) - null to stay still;
  * options.directionY: y direction for the fading out element to fly away if position:aboslute (up, down, random) - null to stay still;
  * options.zoom: direction for the fading element to zoom if position:absolute (in, out) - null to stay same size
@@ -30,24 +30,25 @@ function vFadeOut(fadeOutTarget) {
 
 
   var defaultWaitTime = 2000;
-  var defaultFadeTime = 500;
+  var defaultFadeTime = 250;
   var intervalTime = 20;
   var xDirections = ['left', 'right', 'random'];
   var yDirections = ['up', 'down', 'random'];
-  var zooms = ['in', 'out', 'random']; // default options
+  var zooms = ['in', 'out', 'random'];
+  var modes = ['display', 'visibility']; // default options
 
-  options.waitTime = options.waitTime ? options.waitTime : false;
+  options.waitTime = options.waitTime ? options.waitTime : null;
   options.fadeTime = options.fadeTime ? options.fadeTime : defaultFadeTime;
-  options.toggleVisibility = options.toggleVisibility ? options.toggleVisibility : false;
+  options.mode = modes.includes(options.mode) ? options.mode : 'display';
   options.directionX = options.directionX ? options.directionX : null;
   options.directionY = options.directionY ? options.directionY : null;
   options.zoom = options.zoom ? options.zoom : null;
-  var isVisible = options.toggleVisibility ? function (element) {
+  var isVisible = options.mode === 'visibility' ? function (element) {
     return element.style.visibility !== "hidden";
   } : function (element) {
     return element.style.display !== "none";
   };
-  var makeInvisible = options.toggleVisibility ? function (element) {
+  var makeInvisible = options.mode === 'visibility' ? function (element) {
     element.style.visibility = "hidden";
   } : function (element) {
     element.style.display = "none";
@@ -150,9 +151,7 @@ function vFadeOut(fadeOutTarget) {
             }
           } else {
             clearInterval(fadeOutEffect);
-            makeInvisible(fadeOutTarget); // console.log('top: ' + fadeOutTarget.style.top);
-            // console.log('left: ' + fadeOutTarget.style.left);
-
+            makeInvisible(fadeOutTarget);
             fadeOutTarget.style.top = 0;
             fadeOutTarget.style.left = 0;
             fadeOutTarget.style.transform = 'scale(1)';
@@ -171,11 +170,11 @@ function vFadeOut(fadeOutTarget) {
  * fades the target in
  * @param {any} fadeInTarget element to fade in, or its id
  * @param {function} callback function executed when fade is finished
- * @param {{waitTime: any, display: any, fadeTime: number, toggleVisibility: boolean}} options options object for fade:
- * options.waitTime: wait before executing - true for 2 sec, false for 0 sec, num for other (ms);
- * options.display: display the target should have - true for flex, false for block, string for other;
+ * @param {{waitTime: number, fadeTime: number, mode: string, display: string}} options options object for fade:
+ * options.waitTime: time in ms to wait before executing;
  * options.fadeTime: time for the fadeIn/fadeOut effects, defaults to 250;
- * options.toggleVisibility: true if using visibility:hidden instead of display:none for fadeOut;
+ * options.mode: type of fade-out; 'display' or 'visibility';
+ * options.display: display the target should have; 'block', 'flex', etc.
  */
 
 
@@ -196,21 +195,20 @@ function vFadeIn(fadeInTarget) {
 
   var defaultWaitTime = 2000;
   var defaultFadeTime = 250;
-  var intervalTime = 20; // default options
+  var intervalTime = 20;
+  var modes = ['display', 'visibility']; // default options
 
-  options.waitTime = options.waitTime ? options.waitTime : false;
-  options.display = options.display ? options.display : false;
+  options.waitTime = options.waitTime ? options.waitTime : null;
   options.fadeTime = options.fadeTime ? options.fadeTime : defaultFadeTime;
-  options.toggleVisibility = options.toggleVisibility ? options.toggleVisibility : false; // option values
+  options.mode = modes.includes(options.mode) ? options.mode : 'display';
+  options.display = options.display ? options.display : 'block'; // option values
 
-  options.display = options.display === false ? 'block' : options.display;
-  options.display = options.display === true ? 'flex' : options.display;
-  var isVisible = options.toggleVisibility ? function (element) {
+  var isVisible = options.mode === 'visibility' ? function (element) {
     return element.style.visibility !== "hidden";
   } : function (element) {
     return element.style.display !== "none";
   };
-  var makeVisible = options.toggleVisibility ? function (element) {
+  var makeVisible = options.mode === 'visibility' ? function (element) {
     element.style.visibility = "visible";
   } : function (element) {
     element.style.display = options.display;
@@ -253,28 +251,22 @@ function vFadeIn(fadeInTarget) {
  * @param {any} fadeOutTarget element to fade out, or its id
  * @param {any} fadeInTarget element to fade in, or its id
  * @param {function} callback function executed when fade is finished
- * @param {{waitTime: any, display: any, fadeTime: number, toggleVisibility: boolean}} options options object for fade:
- * options.waitTime: wait before executing - true for 2 sec, false for 0 sec, num for other (ms);
- * options.display: display the target should have - true for flex, false for block, string for other;
+ * @param {{waitTime: any, fadeTime: number, mode: string, directionX: string, directionY: string, zoom: string, display: any}} options options object for fade:
+ * options.waitTime: wait before executing;
  * options.fadeTime: time for the fadeIn/fadeOut effects, defaults to 250;
- * options.toggleVisibility: true if using visibility:hidden instead of display:none for fadeOut;
+ * options.mode: type of fade-out; 'display' or 'visibility';
+ * options.directionX: x direction for the fading out element to fly away if position:aboslute (left, right, random) - null to stay still;
+ * options.directionY: y direction for the fading out element to fly away if position:aboslute (up, down, random) - null to stay still;
+ * options.zoom: direction for the fading element to zoom if position:absolute (in, out) - null to stay same size
+ * options.display: display the target should have; 'block', 'flex', etc.
  */
 
 
 function vFadeReplace(fadeOutTarget, fadeInTarget) {
   var callback = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : function () {};
   var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : [];
-  // static values
-  var defaultWaitTime = 2000;
-  var defaultFadeTime = 250; // default options
-
-  options.waitTime = options.waitTime ? options.waitTime : false;
-  options.display = options.display ? options.display : false;
-  options.fadeTime = options.fadeTime ? options.fadeTime : defaultFadeTime;
-  options.toggleVisibility = options.toggleVisibility ? options.toggleVisibility : false;
 
   if (options.waitTime) {
-    options.waitTime = options.waitTime === true ? defaultWaitTime : options.waitTime;
     setTimeout(function () {
       options.waitTime = false;
       vFadeReplace(fadeOutTarget, fadeInTarget, callback, options);
