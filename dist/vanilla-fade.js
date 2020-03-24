@@ -12,19 +12,13 @@ var VanillaFader = function VanillaFader() {
 
   // constants
   this.defaultFadeTime = 250;
-  this.xDirections = ['left', 'right', 'random'];
-  this.yDirections = ['up', 'down', 'random'];
-  this.zDirections = ['in', 'out', 'random'];
   this.modes = ['display', 'visibility'];
   this.intervalTime = 20;
   /**
-   * @param {{waitTime: number, fadeTime: number, mode: string, directionX: string, directionY: string, directionZ: string, display: any}} options options object for fade:
+   * @param {{waitTime: number, fadeTime: number, mode: string, display: any}} options options object for fade:
    * options.waitTime: time in ms to wait before executing;
    * options.fadeTime: time in ms for the fadeIn/fadeOut effects;
    * options.mode: type of fade-out; 'display' or 'visibility';
-   * options.directionX: x direction for the fading out element to fly away if position:aboslute; 'left', 'right', 'random';
-   * options.directionY: y direction for the fading out element to fly away if position:aboslute; 'up', 'down', 'random';
-   * options.directionZ: direction for the fading element to zoom if position:absolute; 'in', 'out', 'random';
    * options.display: display the target should have; 'block', 'flex', etc;
    */
 
@@ -33,9 +27,6 @@ var VanillaFader = function VanillaFader() {
     _this.waitTime = typeof options.waitTime === 'number' ? options.waitTime : null;
     _this.fadeTime = typeof options.fadeTime === 'number' ? options.fadeTime : _this.defaultFadeTime;
     _this.mode = _this.modes.includes(options.mode) ? options.mode : 'display';
-    _this.directionX = _this.xDirections.includes(options.directionX) ? options.directionX : null;
-    _this.directionY = _this.yDirections.includes(options.directionY) ? options.directionY : null;
-    _this.directionZ = _this.zDirections.includes(options.directionZ) ? options.directionZ : null;
     _this.display = typeof options.display === 'string' ? options.display : 'block';
     return _this;
   };
@@ -78,61 +69,6 @@ var VanillaFader = function VanillaFader() {
 
     if (fadeOutTarget) {
       if (isVisible(fadeOutTarget)) {
-        // set zoom/direction
-        if (_this.directionX) {
-          if (_this.directionX === 'random') {
-            _this.directionX = ['right', 'left', null][Math.floor(Math.random() * 3)];
-          }
-
-          var xInterval;
-
-          switch (_this.directionX) {
-            case 'right':
-              xInterval = 1;
-              break;
-
-            case 'left':
-              xInterval = -1;
-              break;
-          }
-        }
-
-        if (_this.directionY) {
-          if (_this.directionY === 'random') {
-            _this.directionY = ['up', 'down', null][Math.floor(Math.random() * 3)];
-          }
-
-          var yInterval;
-
-          switch (_this.directionY) {
-            case 'up':
-              yInterval = -1;
-              break;
-
-            case 'down':
-              yInterval = 1;
-              break;
-          }
-        }
-
-        if (_this.directionZ) {
-          if (_this.directionZ === 'random') {
-            _this.directionZ = ['in', 'out', null][Math.floor(Math.random() * 3)];
-          }
-
-          var zInterval;
-
-          switch (_this.directionZ) {
-            case 'in':
-              zInterval = 0.005;
-              break;
-
-            case 'out':
-              zInterval = -0.005;
-              break;
-          }
-        }
-
         if (_this.waitTime) {
           setTimeout(function () {
             _this.waitTime = false;
@@ -144,29 +80,10 @@ var VanillaFader = function VanillaFader() {
           var fadeOutEffect = setInterval(function () {
             if (fadeOutTarget.style.opacity > 0) {
               // fade out a little bit
-              fadeOutTarget.style.opacity -= opacityInterval; // move a little bit in directions
-
-              if (_this.directionX) {
-                fadeOutTarget.style.left = parseFloat(fadeOutTarget.style.left.replace('px', '')) + xInterval + "px";
-              }
-
-              if (_this.directionY) {
-                fadeOutTarget.style.top = parseFloat(fadeOutTarget.style.top.replace('px', '')) + yInterval + "px";
-              }
-
-              if (_this.directionZ) {
-                if (!fadeOutTarget.style.transform) {
-                  fadeOutTarget.style.transform = 'scale(1)';
-                }
-
-                fadeOutTarget.style.transform = 'scale(' + (parseFloat(fadeOutTarget.style.transform.replace('scale(', '').replace(')', '')) + zInterval) + ')';
-              }
+              fadeOutTarget.style.opacity -= opacityInterval;
             } else {
               clearInterval(fadeOutEffect);
               makeInvisible(fadeOutTarget);
-              fadeOutTarget.style.top = 0;
-              fadeOutTarget.style.left = 0;
-              fadeOutTarget.style.transform = 'scale(1)';
               callback();
             }
           }, _this.intervalTime);
