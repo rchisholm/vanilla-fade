@@ -21,16 +21,16 @@ class VanillaFader {
             this.fadeTime = this.defaultFadeTime;
             this.mode = 'display';
             this.display = 'block';
-            if(options.waitTime) {
+            if (options.waitTime) {
                 this.waitTime = typeof options.waitTime === 'number' ? options.waitTime : null;
             }
-            if(options.fadeTime) {
+            if (options.fadeTime) {
                 this.fadeTime = typeof options.fadeTime === 'number' ? options.fadeTime : this.defaultFadeTime;
             }
-            if(options.mode) {
+            if (options.mode) {
                 this.mode = this.modes.includes(options.mode) ? options.mode : 'display';
             }
-            if(options.display) {
+            if (options.display) {
                 this.display = typeof options.display === 'string' ? options.display : 'block';
             }
         };
