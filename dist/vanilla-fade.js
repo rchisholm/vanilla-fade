@@ -6,11 +6,12 @@
  * fades the target out
  * @param {element||string} fadeOutTarget element to fade out, or its id
  * @param {function} callback function executed when fade is finished
- * @param {{waitTime: any, fadeTime: number, toggleVisibility: boolean, direction: string, zoom: string}} options options object for fade:
+ * @param {{waitTime: any, fadeTime: number, toggleVisibility: boolean, directionX: string, directionY: string, zoom: string}} options options object for fade:
  * options.waitTime: wait before executing - true for 2 sec, false for 0 sec, num for other (ms);
  * options.fadeTime: time for the fadeIn/fadeOut effects, defaults to 250;
  * options.toggleVisibility: true if using visibility:hidden instead of display:none for fadeOut;
- * options.direction: direction for the fading out element to fly away if position:aboslute (left, right, up, down) - null to stay still;
+ * options.directionX: x direction for the fading out element to fly away if position:aboslute (left, right, random) - null to stay still;
+ * options.directionY: y direction for the fading out element to fly away if position:aboslute (up, down, random) - null to stay still;
  * options.zoom: direction for the fading element to zoom if position:absolute (in, out) - null to stay same size
  */
 function vFadeOut(fadeOutTarget) {
