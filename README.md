@@ -42,7 +42,7 @@ Then, simply call the functions on the elements you want to fade in and out.
 `options` is an optional parameter; its members configure the fade-out:
 | Option | Type | Description | Default |
 | --- | --- | --- | --- |
-| waitTime | number \| boolean | if not false, time in ms to wait before executing | false |
+| waitTime | number | if defined, time in ms to wait before executing | false |
 | fadeTime | number | time in ms for the fade effect to complete | 250 |
 | mode | string | type of fade-out; 'display' or 'visibility' | 'display' |
 | directionX | string | x direction for the fading out element to fly away if position:aboslute; 'left', 'right', 'random', or null | null |
@@ -82,7 +82,7 @@ vFadeOut(
 `options` is an optional parameter; its members configure the fade-in:
 | Option | Type | Description | Default |
 | --- | --- | --- | --- |
-| waitTime | number \| boolean | if not false, time in ms to wait before executing | false |
+| waitTime | number | if defined, time in ms to wait before executing | false |
 | fadeTime | number | time in ms for the fade effect to complete | 250 |
 | mode | string | type of fade-in; 'display' or 'visibility' | 'display' |
 | display | string | if mode = 'display', display the target should have; 'block', 'flex', etc. | 'block' |
@@ -119,7 +119,7 @@ vFadeIn(
 `options` is an optional parameter; its members configure the fade-in and fade-out:
 | Option | Type | Description | Default |
 | --- | --- | --- | --- |
-| waitTime | number \| boolean | if not false, time in ms to wait before executing | false |
+| waitTime | number | if defined, time in ms to wait before executing | false |
 | fadeTime | number | time in ms for the fade effect to complete | 250 |
 | mode | string | type of fade-in; 'display' or 'visibility' | 'display' |
 | directionX | string | x direction for the fading out element to fly away if position:aboslute; 'left', 'right', 'random', or null | null |
