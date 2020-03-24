@@ -214,6 +214,11 @@ var VanillaFader = function VanillaFader() {
   this.setOptions(options);
 };
 
+function createFader() {
+  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  return new VanillaFader(options);
+}
+
 function vFadeOut(fadeOutTarget) {
   var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
   var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};

@@ -192,6 +192,10 @@ class VanillaFader {
     }
 }
 
+function createFader(options = {}) {
+    return new VanillaFader(options);
+}
+
 function vFadeOut(fadeOutTarget, callback = () => {}, options = {}) {
     var vFader = new VanillaFader(options);
     vFader.fadeOut(fadeOutTarget, callback);
