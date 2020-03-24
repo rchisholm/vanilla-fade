@@ -17,12 +17,12 @@ class VanillaFader {
          */
         this.setOptions = (options = {}) => {
             // defaults
-            this.waitTime = null;
+            this.waitTime = 0;
             this.fadeTime = this.defaultFadeTime;
             this.mode = 'display';
             this.display = 'block';
             if (options.waitTime) {
-                this.waitTime = typeof options.waitTime === 'number' ? options.waitTime : null;
+                this.waitTime = typeof options.waitTime === 'number' ? options.waitTime : 0;
             }
             if (options.fadeTime) {
                 this.fadeTime = typeof options.fadeTime === 'number' ? options.fadeTime : this.defaultFadeTime;
@@ -70,12 +70,7 @@ class VanillaFader {
 
             if (fadeOutTarget) {
                 if (isVisible(fadeOutTarget)) {
-                    if (this.waitTime) {
-                        setTimeout(() => {
-                            this.waitTime = null;
-                            this.fadeOut(fadeOutTarget, callback);
-                        }, this.waitTime);
-                    } else {
+                    setTimeout(() => {
                         var opacityInterval = this.intervalTime / this.fadeTime;
                         fadeOutTarget.style.opacity = 1;
                         var fadeOutEffect = setInterval(() => {
@@ -88,7 +83,7 @@ class VanillaFader {
                                 callback();
                             }
                         }, this.intervalTime);
-                    }
+                    }, this.waitTime);
                 } else {
                     callback();
                     // setTimeout(callback, options.fadeTime);
@@ -134,12 +129,7 @@ class VanillaFader {
 
             if (fadeInTarget) {
                 if (!isVisible(fadeInTarget)) {
-                    if (this.waitTime) {
-                        setTimeout(() => {
-                            this.waitTime = false;
-                            this.fadeIn(fadeInTarget, callback);
-                        }, this.waitTime);
-                    } else {
+                    setTimeout(() => {
                         if (fadeInTarget) {
                             var opacityInterval = this.intervalTime / this.fadeTime;
                             fadeInTarget.style.opacity = 0;
@@ -153,7 +143,7 @@ class VanillaFader {
                                 }
                             }, this.intervalTime);
                         }
-                    }
+                    }, this.waitTime);
                 } else {
                     callback();
                     // setTimeout(callback, options.fadeTime);
@@ -175,16 +165,11 @@ class VanillaFader {
                 this.setOptions(options);
             }
 
-            if (this.waitTime) {
-                setTimeout(() => {
-                    this.waitTime = null;
-                    this.fadeReplace(fadeOutTarget, fadeInTarget, callback);
-                }, this.waitTime);
-            } else {
+            setTimeout(() => {
                 this.fadeOut(fadeOutTarget, () => {
                     this.fadeIn(fadeInTarget, callback);
                 });
-            }
+            }, this.waitTime);
         };
 
         // set options
