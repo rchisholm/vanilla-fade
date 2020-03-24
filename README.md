@@ -92,9 +92,6 @@ Class methods can be called from a `VanillaFader` instance, and use the options 
 #### fadeOut
 After the wait time, fade the target element out, then optionally execute a callback. If element is already faded-out, the callback is called after the wait time.
 ```javascript
-VanillaFader.fadeOut: (fadeOutTarget: any, callback?: Function, skipWait?: boolean) => void
-```
-```javascript
 fader.fadeOut(
     'element-id-1', 
     function() { 
@@ -106,9 +103,6 @@ fader.fadeOut(
 #### fadeIn
 After the wait time, fade the target element in, then optionally execute a callback. If element is already faded-in, the callback is called after the wait time.
 ```javascript
-VanillaFader.fadeIn: (fadeInTarget: any, callback?: Function, skipWait?: boolean) => void
-```
-```javascript
 fader.fadeIn(
     'element-id-1', 
     function() { 
@@ -119,9 +113,6 @@ fader.fadeIn(
 
 #### fadeReplace
 After the wait time, fade the first target element out, then fade the second target element in, then optionally execute a callback. If first element is already faded-out, just fade the second element in and then call the callback. If the second element is already faded-in, just fade the first element in, then call the callback. If the first element is already faded-out, and the second element is already faded-in, the callback is called after the wait time.
-```javascript
-VanillaFader.fadeReplace: (fadeOutTarget: any, fadeInTarget: any, callback?: Function) => void
-```
 ```javascript
 fader.fadeReplace(
     'element-id-1', 
@@ -138,9 +129,6 @@ Standalone functions can be called without a `VanillaFader` instance, and they a
 #### vFadeOut
 Calls `VanillaFader.fadeOut` with custom options.
 ```javascript
-function vFadeOut(fadeOutTarget: any, callback?: () => void, options?: {}): void
-```
-```javascript
 vFadeOut(
     'element-id-1', 
     function() { 
@@ -155,9 +143,6 @@ vFadeOut(
 
 #### vFadeIn
 Calls `VanillaFader.fadeIn` with custom options.
-```javascript
-function vFadeIn(fadeInTarget: any, callback?: () => void, options?: {}): void
-```
 ```javascript
 vFadeIn(
     'element-id-1', 
@@ -174,9 +159,6 @@ vFadeIn(
 
 #### vFadeReplace
 Calls `VanillaFader.fadeReplace` with custom options.
-```javascript
-function vFadeReplace(fadeOutTarget: any, fadeInTarget: any, callback?: () => void, options?: {}): void
-```
 ```javascript
 vFadeIn(
     'element-id-1',
