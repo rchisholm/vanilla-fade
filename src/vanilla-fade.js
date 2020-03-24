@@ -1,258 +1,277 @@
 /* jshint esversion:6 */
 
-/**
- * fades the target out
- * @param {element||string} fadeOutTarget element to fade out, or its id
- * @param {function} callback function executed when fade is finished
- * @param {{waitTime: number, fadeTime: number, mode: string, directionX: string, directionY: string, zoom: string}} options options object for fade:
- * options.waitTime: wait before executing;
- * options.fadeTime: time for the fadeIn/fadeOut effects, defaults to 250;
- * options.mode: type of fade-out; 'display' or 'visibility';
- * options.directionX: x direction for the fading out element to fly away if position:aboslute (left, right, random) - null to stay still;
- * options.directionY: y direction for the fading out element to fly away if position:aboslute (up, down, random) - null to stay still;
- * options.zoom: direction for the fading element to zoom if position:absolute (in, out) - null to stay same size
- */
-function vFadeOut(fadeOutTarget, callback = () => {}, options = []) {
+class VanillaFader {
 
-    // check cb
-    if (typeof callback !== 'function') {
-        callback = () => {};
-    }
+    constructor(options = {}) {
+        // constants
+        this.defaultFadeTime = 250;
+        this.xDirections = ['left', 'right', 'random'];
+        this.yDirections = ['up', 'down', 'random'];
+        this.zDirections = ['in', 'out', 'random'];
+        this.modes = ['display', 'visibility'];
+        this.intervalTime = 20;
 
-    // check target
-    if (typeof fadeOutTarget === 'string') {
-        fadeOutTarget = document.getElementById(fadeOutTarget);
-    }
+        /**
+         * @param {{waitTime: number, fadeTime: number, mode: string, directionX: string, directionY: string, directionZ: string, display: any}} options options object for fade:
+         * options.waitTime: time in ms to wait before executing;
+         * options.fadeTime: time in ms for the fadeIn/fadeOut effects;
+         * options.mode: type of fade-out; 'display' or 'visibility';
+         * options.directionX: x direction for the fading out element to fly away if position:aboslute; 'left', 'right', 'random';
+         * options.directionY: y direction for the fading out element to fly away if position:aboslute; 'up', 'down', 'random';
+         * options.directionZ: direction for the fading element to zoom if position:absolute; 'in', 'out', 'random';
+         * options.display: display the target should have; 'block', 'flex', etc;
+         */
+        this.setOptions = (options = {}) => {
+            this.waitTime = typeof options.waitTime === 'number' ? options.waitTime : null;
+            this.fadeTime = typeof options.fadeTime === 'number' ? options.fadeTime : this.defaultFadeTime;
+            this.mode = this.modes.includes(options.mode) ? options.mode : 'display';
+            this.directionX = this.xDirections.includes(options.directionX) ? options.directionX : null;
+            this.directionY = this.yDirections.includes(options.directionY) ? options.directionY : null;
+            this.directionZ = this.zDirections.includes(options.directionZ) ? options.directionZ : null;
+            this.display = typeof options.display === 'string' ? options.display : 'block';
+            return this;
+        };
 
-    // static values
-    const defaultWaitTime = 2000;
-    const defaultFadeTime = 250;
-    const intervalTime = 20;
-    const xDirections = ['left', 'right', 'random'];
-    const yDirections = ['up', 'down', 'random'];
-    const zooms = ['in', 'out', 'random'];
-    const modes = ['display', 'visibility'];
+        /**
+         * @param {any} fadeOutTarget element to fade out, or its id
+         * @param {function} callback function executed when fade is finished
+         * @param {object} options options for fade configuration
+         */
+        this.fadeOut = (fadeOutTarget, callback = () => {}, options = null) => {
 
-    // default options
-    options.waitTime = options.waitTime ? options.waitTime : null;
-    options.fadeTime = options.fadeTime ? options.fadeTime : defaultFadeTime;
-    options.mode = modes.includes(options.mode) ? options.mode : 'display';
-    options.directionX = options.directionX ? options.directionX : null;
-    options.directionY = options.directionY ? options.directionY : null;
-    options.zoom = options.zoom ? options.zoom : null;
-
-
-    var isVisible = options.mode === 'visibility' ? (element) => {
-        return element.style.visibility !== "hidden";
-    } : (element) => {
-        return element.style.display !== "none";
-    };
-    var makeInvisible = options.mode === 'visibility' ? (element) => {
-        element.style.visibility = "hidden";
-    } : (element) => {
-        element.style.display = "none";
-    };
-
-    if (fadeOutTarget) {
-        if (isVisible(fadeOutTarget)) {
-            // set zoom/direction
-            if (options.directionX) {
-                options.directionX = xDirections.includes(options.directionX) ? options.directionX : null;
-                if (options.directionX === 'random') {
-                    options.directionX = ['right', 'left', null][Math.floor(Math.random() * 3)];
-                }
-                var xDirectionInterval;
-                switch (options.directionX) {
-                    case 'right':
-                        xDirectionInterval = 1;
-                        break;
-                    case 'left':
-                        xDirectionInterval = -1;
-                        break;
-                }
+            // set options
+            if (options) {
+                this.setOptions(options);
             }
-            if (options.directionY) {
-                options.directionY = yDirections.includes(options.directionY) ? options.directionY : null;
-                if (options.directionY === 'random') {
-                    options.directionY = ['up', 'down', null][Math.floor(Math.random() * 3)];
-                }
-                var yDirectionInterval;
-                switch (options.directionY) {
-                    case 'up':
-                        yDirectionInterval = -1;
-                        break;
-                    case 'down':
-                        yDirectionInterval = 1;
-                        break;
-                }
+
+            // check callback
+            if (typeof callback !== 'function') {
+                callback = () => {};
             }
-            if (options.zoom) {
-                options.zoom = zooms.includes(options.zoom) ? options.zoom : null;
-                if (options.zoom === 'random') {
-                    options.zoom = ['in', 'out', null][Math.floor(Math.random() * 3)];
-                }
-                var zoomInterval;
-                switch (options.zoom) {
-                    case 'in':
-                        zoomInterval = 0.005;
-                        break;
-                    case 'out':
-                        zoomInterval = -0.005;
-                        break;
-                }
+
+            // check target
+            if (typeof fadeOutTarget === 'string') {
+                fadeOutTarget = document.getElementById(fadeOutTarget);
             }
-            if (options.waitTime) {
-                options.waitTime = options.waitTime === true ? defaultWaitTime : options.waitTime;
-                options.waitTime = typeof options.waitTime === 'number' ? options.waitTime : defaultWaitTime;
-                setTimeout(() => {
-                    options.waitTime = false;
-                    vFadeOut(fadeOutTarget, callback, options);
-                }, options.waitTime);
-            } else {
-                options.fadeTime = typeof options.fadeTime === 'number' ? options.fadeTime : defaultFadeTime;
-                var opacityInterval = intervalTime / options.fadeTime;
-                fadeOutTarget.style.opacity = 1;
-                var fadeOutEffect = setInterval(() => {
-                    if (fadeOutTarget.style.opacity > 0) {
-                        // fade out a little bit
-                        fadeOutTarget.style.opacity -= opacityInterval;
-                        // move a little bit in directions
-                        if (options.directionX) {
-                            fadeOutTarget.style.left = (parseFloat(fadeOutTarget.style.left.replace('px', '')) + xDirectionInterval) + "px";
+
+            var isVisible = this.mode === 'visibility' ? (element) => {
+                return element.style.visibility !== "hidden";
+            } : (element) => {
+                return element.style.display !== "none";
+            };
+            var makeInvisible = this.mode === 'visibility' ? (element) => {
+                element.style.visibility = "hidden";
+            } : (element) => {
+                element.style.display = "none";
+            };
+
+            if (fadeOutTarget) {
+                if (isVisible(fadeOutTarget)) {
+                    // set zoom/direction
+                    if (this.directionX) {
+                        if (this.directionX === 'random') {
+                            this.directionX = ['right', 'left', null][Math.floor(Math.random() * 3)];
                         }
-                        if (options.directionY) {
-                            fadeOutTarget.style.top = (parseFloat(fadeOutTarget.style.top.replace('px', '')) + yDirectionInterval) + "px";
+                        var xInterval;
+                        switch (this.directionX) {
+                            case 'right':
+                                xInterval = 1;
+                                break;
+                            case 'left':
+                                xInterval = -1;
+                                break;
                         }
-                        // zoom a little bit
-                        if (options.zoom) {
-                            if (!fadeOutTarget.style.transform) {
-                                fadeOutTarget.style.transform = 'scale(1)';
-                            }
-                            fadeOutTarget.style.transform = 'scale(' + (parseFloat(fadeOutTarget.style.transform.replace('scale(', '').replace(')', '')) + zoomInterval) + ')';
-                        }
-                    } else {
-                        clearInterval(fadeOutEffect);
-                        makeInvisible(fadeOutTarget);
-                        fadeOutTarget.style.top = 0;
-                        fadeOutTarget.style.left = 0;
-                        fadeOutTarget.style.transform = 'scale(1)';
-                        callback();
                     }
-                }, intervalTime);
-            }
-        } else {
-            callback();
-            // setTimeout(callback, options.fadeTime);
-        }
-    } else {
-        console.log('fadeOut error: no such element exists.');
-    }
-}
-
-/**
- * fades the target in
- * @param {any} fadeInTarget element to fade in, or its id
- * @param {function} callback function executed when fade is finished
- * @param {{waitTime: number, fadeTime: number, mode: string, display: string}} options options object for fade:
- * options.waitTime: time in ms to wait before executing;
- * options.fadeTime: time for the fadeIn/fadeOut effects, defaults to 250;
- * options.mode: type of fade-out; 'display' or 'visibility';
- * options.display: display the target should have; 'block', 'flex', etc.
- */
-function vFadeIn(fadeInTarget, callback = () => {}, options = []) {
-
-    // check cb
-    if (typeof callback !== 'function') {
-        callback = () => {};
-    }
-
-    // check target
-    if (typeof fadeInTarget === 'string') {
-        fadeInTarget = document.getElementById(fadeInTarget);
-    }
-
-    // static values
-    const defaultWaitTime = 2000;
-    const defaultFadeTime = 250;
-    const intervalTime = 20;
-    const modes = ['display', 'visibility'];
-
-    // default options
-    options.waitTime = options.waitTime ? options.waitTime : null;
-    options.fadeTime = options.fadeTime ? options.fadeTime : defaultFadeTime;
-    options.mode = modes.includes(options.mode) ? options.mode : 'display';
-    options.display = options.display ? options.display : 'block';
-
-    // option values
-    var isVisible = options.mode === 'visibility' ? (element) => {
-        return element.style.visibility !== "hidden";
-    } : (element) => {
-        return element.style.display !== "none";
-    };
-    var makeVisible = options.mode === 'visibility' ? (element) => {
-        element.style.visibility = "visible";
-    } : (element) => {
-        element.style.display = options.display;
-    };
-    options.fadeTime = typeof options.fadeTime === 'number' ? options.fadeTime : defaultFadeTime;
-
-    if (fadeInTarget) {
-        if (!isVisible(fadeInTarget)) {
-            if (options.waitTime) {
-                options.waitTime = options.waitTime === true ? defaultWaitTime : options.waitTime;
-                options.waitTime = typeof options.waitTime === 'number' ? options.waitTime : defaultWaitTime;
-                setTimeout(() => {
-                    options.waitTime = false;
-                    vFadeIn(fadeInTarget, callback, options);
-                }, options.waitTime);
-            } else {
-                if (fadeInTarget) {
-                    var opacityInterval = intervalTime / options.fadeTime;
-                    fadeInTarget.style.opacity = 0;
-                    makeVisible(fadeInTarget);
-                    var fadeInEffect = setInterval(() => {
-                        if (fadeInTarget.style.opacity < 1) {
-                            fadeInTarget.style.opacity = parseFloat(fadeInTarget.style.opacity) + parseFloat(opacityInterval);
-                        } else {
-                            clearInterval(fadeInEffect);
-                            callback();
+                    if (this.directionY) {
+                        if (this.directionY === 'random') {
+                            this.directionY = ['up', 'down', null][Math.floor(Math.random() * 3)];
                         }
-                    }, intervalTime);
+                        var yInterval;
+                        switch (this.directionY) {
+                            case 'up':
+                                yInterval = -1;
+                                break;
+                            case 'down':
+                                yInterval = 1;
+                                break;
+                        }
+                    }
+                    if (this.directionZ) {
+                        if (this.directionZ === 'random') {
+                            this.directionZ = ['in', 'out', null][Math.floor(Math.random() * 3)];
+                        }
+                        var zInterval;
+                        switch (this.directionZ) {
+                            case 'in':
+                                zInterval = 0.005;
+                                break;
+                            case 'out':
+                                zInterval = -0.005;
+                                break;
+                        }
+                    }
+                    if (this.waitTime) {
+                        setTimeout(() => {
+                            this.waitTime = false;
+                            vFadeOut(fadeOutTarget, callback);
+                        }, this.waitTime);
+                    } else {
+                        var opacityInterval = this.intervalTime / this.fadeTime;
+                        fadeOutTarget.style.opacity = 1;
+                        var fadeOutEffect = setInterval(() => {
+                            if (fadeOutTarget.style.opacity > 0) {
+                                // fade out a little bit
+                                fadeOutTarget.style.opacity -= opacityInterval;
+                                // move a little bit in directions
+                                if (this.directionX) {
+                                    fadeOutTarget.style.left = (parseFloat(fadeOutTarget.style.left.replace('px', '')) + xInterval) + "px";
+                                }
+                                if (this.directionY) {
+                                    fadeOutTarget.style.top = (parseFloat(fadeOutTarget.style.top.replace('px', '')) + yInterval) + "px";
+                                }
+                                if (this.directionZ) {
+                                    if (!fadeOutTarget.style.transform) {
+                                        fadeOutTarget.style.transform = 'scale(1)';
+                                    }
+                                    fadeOutTarget.style.transform = 'scale(' + (parseFloat(fadeOutTarget.style.transform.replace('scale(', '').replace(')', '')) + zInterval) + ')';
+                                }
+                            } else {
+                                clearInterval(fadeOutEffect);
+                                makeInvisible(fadeOutTarget);
+                                fadeOutTarget.style.top = 0;
+                                fadeOutTarget.style.left = 0;
+                                fadeOutTarget.style.transform = 'scale(1)';
+                                callback();
+                            }
+                        }, this.intervalTime);
+                    }
+                } else {
+                    callback();
+                    // setTimeout(callback, options.fadeTime);
                 }
+            } else {
+                console.log('fadeOut error: no such element exists.');
             }
-        } else {
-            callback();
-            // setTimeout(callback, options.fadeTime);
-        }
-    } else {
-        console.log('fadeIn error: no such element exists: ');
+        };
+
+        /**
+         * @param {any} fadeInTarget element to fade in, or its id
+         * @param {function} callback function executed when fade is finished
+         * @param {object} options options for fade configuration
+         */
+        this.fadeIn = (fadeInTarget, callback = () => {}, options = null) => {
+
+            // set options
+            if (options) {
+                this.setOptions(options);
+            }
+
+            // check callback
+            if (typeof callback !== 'function') {
+                callback = () => {};
+            }
+
+            // check target
+            if (typeof fadeInTarget === 'string') {
+                fadeInTarget = document.getElementById(fadeInTarget);
+            }
+
+            // option values
+            var isVisible = this.mode === 'visibility' ? (element) => {
+                return element.style.visibility !== "hidden";
+            } : (element) => {
+                return element.style.display !== "none";
+            };
+            var makeVisible = this.mode === 'visibility' ? (element) => {
+                element.style.visibility = "visible";
+            } : (element) => {
+                element.style.display = this.display;
+            };
+
+            if (fadeInTarget) {
+                if (!isVisible(fadeInTarget)) {
+                    if (this.waitTime) {
+                        setTimeout(() => {
+                            this.waitTime = false;
+                            vFadeIn(fadeInTarget, callback);
+                        }, this.waitTime);
+                    } else {
+                        if (fadeInTarget) {
+                            var opacityInterval = this.intervalTime / this.fadeTime;
+                            fadeInTarget.style.opacity = 0;
+                            makeVisible(fadeInTarget);
+                            var fadeInEffect = setInterval(() => {
+                                if (fadeInTarget.style.opacity < 1) {
+                                    fadeInTarget.style.opacity = parseFloat(fadeInTarget.style.opacity) + parseFloat(opacityInterval);
+                                } else {
+                                    clearInterval(fadeInEffect);
+                                    callback();
+                                }
+                            }, this.intervalTime);
+                        }
+                    }
+                } else {
+                    callback();
+                    // setTimeout(callback, options.fadeTime);
+                }
+            } else {
+                console.log('fadeIn error: no such element exists: ');
+            }
+        };
+
+        /**
+         * @param {any} fadeOutTarget element to fade out, or its id
+         * @param {any} fadeInTarget element to fade in, or its id
+         * @param {function} callback function executed when fade is finished
+         * @param {object} options options for fade configuration
+         */
+        this.fadeReplace = (fadeOutTarget, fadeInTarget, callback = () => {}, options = null) => {
+            // set options
+            if (options) {
+                this.setOptions(options);
+            }
+
+            if (this.waitTime) {
+                setTimeout(() => {
+                    this.waitTime = false;
+                    vFadeReplace(fadeOutTarget, fadeInTarget, callback);
+                }, this.waitTime);
+            } else {
+                vFadeOut(fadeOutTarget, () => {
+                    vFadeIn(fadeInTarget, callback);
+                });
+            }
+        };
+
+        // set options
+        this.setOptions(options);
     }
 }
 
-/**
- * fades the first target out, then fades the second target in.
- * @param {any} fadeOutTarget element to fade out, or its id
- * @param {any} fadeInTarget element to fade in, or its id
- * @param {function} callback function executed when fade is finished
- * @param {{waitTime: any, fadeTime: number, mode: string, directionX: string, directionY: string, zoom: string, display: any}} options options object for fade:
- * options.waitTime: wait before executing;
- * options.fadeTime: time for the fadeIn/fadeOut effects, defaults to 250;
- * options.mode: type of fade-out; 'display' or 'visibility';
- * options.directionX: x direction for the fading out element to fly away if position:aboslute (left, right, random) - null to stay still;
- * options.directionY: y direction for the fading out element to fly away if position:aboslute (up, down, random) - null to stay still;
- * options.zoom: direction for the fading element to zoom if position:absolute (in, out) - null to stay same size
- * options.display: display the target should have; 'block', 'flex', etc.
- */
-function vFadeReplace(fadeOutTarget, fadeInTarget, callback = () => {}, options = []) {
 
-    if (options.waitTime) {
-        setTimeout(() => {
-            options.waitTime = false;
-            vFadeReplace(fadeOutTarget, fadeInTarget, callback, options);
-        }, options.waitTime);
-    } else {
-        vFadeOut(fadeOutTarget, () => {
-            vFadeIn(fadeInTarget, callback, options);
-        }, options);
-    }
+function vFadeOut(fadeOutTarget, callback = () => {}, options = {}) {
+    var vFader = new VanillaFader(options);
+    vFader.fadeOut(fadeOutTarget, callback);
+
+    // // alt version:
+    // var vFader = new VanillaFader();
+    // vFader.fadeOut(fadeOutTarget, callback, options);
+}
+
+function vFadeIn(fadeInTarget, callback = () => {}, options = {}) {
+    var vFader = new VanillaFader(options);
+    vFader.fadeIn(fadeInTarget, callback);
+
+    // // alt version:
+    // var vFader = new VanillaFader();
+    // vFader.fadeIn(fadeInTarget, callback, options);
+}
+
+function vFadeReplace(fadeOutTarget, fadeInTarget, callback = () => {}, options = {}) {
+    var vFader = new VanillaFader(options);
+    vFader.fadeReplace(fadeOutTarget, fadeInTarget, callback);
+
+    // // alt version:
+    // var vFader = new VanillaFader();
+    // vFader.fadeReplace(fadeOutTarget, fadeInTarget, callback, options);
 }
