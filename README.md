@@ -45,6 +45,10 @@ fader.fadeReplace('element-id-2', 'element-id-3', function(){
 ```
 The first method (`vFadeIn`, `vFadeOut`, `vFadeReplace`) is best for calling just a few times, or with a variety of options; if you are calling the methods many times, all using the same options, use the second method (`fader.fadeOut`, `fader.fadeIn`, `fader.fadeReplace`).
 
+## Live Examples
+
+- [Live Examples of fadeIn, fadeOut, fadeReplace](https://rchisholm.github.io/vanilla-fader/sample/)
+
 ## Features
 
 ### Options
