@@ -1,0 +1,77 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body style='margin:0'>
+        <div style='max-width: 800px; margin:auto; padding: 10px; text-align: center;'>
+            <h1>fadeIn/fadeOut (mode: visibility)</h1>
+            <img src='img/11.jpg' id='temp-image-1' style='max-width:100%;'>
+            <br><br>
+            <button type='button' onclick='fadeOut1()'>fadeOut</button>&nbsp;<button type='button' onclick='fadeIn1()'>fadeIn</button>
+            <hr>
+            <br>
+            <h1>fadeIn/fadeOut (mode: display)</h1>
+            <img src='img/12.jpg' id='temp-image-2' style='max-width:100%;'>
+            <br><br>
+            <button type='button' onclick='fadeOut2()'>fadeOut</button>&nbsp;<button type='button' onclick='fadeIn2()'>fadeIn</button>
+            <hr>
+            <br>
+            <h1>fadeReplace</h1>
+            <div id='div-2'>
+                <img src='img/1.png' id='temp-image-3' style='max-width:100%'>
+                <br><br>
+                <button type='button' onclick="fadeReplace1();">replace</button>
+            </div>
+            <div id='div-3' style='display:none'>
+                <img src='img/3.png' id='temp-image-4' style='max-width:100%;'>
+                <br><br>
+                <button type='button' onclick="fadeReplace2();">replace</button>
+            </div>
+        </div>
+        <br><br>
+        
+        <script type='text/javascript' src='vanilla-fader.js'></script>
+        <script>
+            var options1 = {
+                    mode: 'visibility',
+                    fadeTime: 1000,
+                    waitTime: 0
+                };
+            var options2 = {
+                    mode: 'display',
+                    fadeTime: 1000,
+                    waitTime: 0
+                };
+            function fadeReplace1() {
+                // var fader = new VanillaFader(options2);
+                // fader.fadeReplace('div-2', 'div-3');
+                vFadeReplace('div-2', 'div-3', () => {console.log('fadeReplace complete');}, options2);
+            }
+            function fadeReplace2() {
+                // var fader = new VanillaFader(options2);
+                // fader.fadeReplace('div-3', 'div-2');
+                vFadeReplace('div-3', 'div-2', () => {console.log('fadeReplace complete');}, options2);
+            }
+            function fadeOut1() {
+                // var fader = new VanillaFader(options1);
+                // fader.fadeOut('temp-image-1');
+                vFadeOut('temp-image-1', () => {console.log('fadeOut complete');}, options1);
+            }
+            function fadeIn1() {
+                // var fader = new VanillaFader(options1);
+                // fader.fadeIn('temp-image-1');
+                vFadeIn('temp-image-1', () => {console.log('fadeIn complete');}, options1);
+            }
+            function fadeOut2() {
+                // var fader = new VanillaFader(options1);
+                // fader.fadeOut('temp-image-1');
+                vFadeOut('temp-image-2', () => {console.log('fadeOut complete');}, options2);
+            }
+            function fadeIn2() {
+                // var fader = new VanillaFader(options1);
+                // fader.fadeIn('temp-image-1');
+                vFadeIn('temp-image-2', () => {console.log('fadeIn complete');}, options2);
+            }
+        </script>
+    </body>
+</html>
